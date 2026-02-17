@@ -1,271 +1,394 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>22y22 S.A.S.</title>
-    <style>
-        :root { --bg: #121416; --surface: #25282c; --platinum: #e5e4e2; --accent: #00d4ff; --text: #ffffff; --danger: #ff4d4d; --success: #2ecc71; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        nav { width: 280px; background: var(--surface); padding: 20px; border-right: 1px solid #333; display: flex; flex-direction: column; }
-        .reloj { background: #121416; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 20px; border: 1px solid var(--accent); color: var(--accent); font-family: monospace; font-size: 1.1rem; }
-        .nav-btn { padding: 15px; background: none; border: none; color: #aaa; text-align: left; cursor: pointer; border-radius: 8px; margin-bottom: 5px; font-size: 1rem; transition: 0.3s; }
-        .nav-btn.active { background: var(--platinum); color: var(--bg); font-weight: bold; }
-        main { flex: 1; padding: 40px; overflow-y: auto; }
-        .card { background: var(--surface); padding: 25px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        input, select { background: #121416; border: 1px solid #444; color: white; padding: 12px; border-radius: 6px; width: 100%; box-sizing: border-box; }
-        .btn { padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
-        .btn-main { background: var(--platinum); color: var(--bg); }
-        .btn-edit { background: var(--accent); color: var(--bg); padding: 5px 10px; font-size: 0.7rem; }
-        .btn-danger { background: var(--danger); color: white; padding: 5px 10px; font-size: 0.7rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { text-align: left; padding: 12px; border-bottom: 2px solid #444; color: var(--platinum); }
-        td { padding: 10px; border-bottom: 1px solid #333; }
-        .hidden { display: none; }
+<meta charset="UTF-8">
+<title>22y22 S.A.S.</title>
 
-        /* IMPRESIÓN */
-        #area-impresion { display: none; }
-        @media print {
-            body > * { display: none !important; }
-            #area-impresion { display: block !important; position: absolute; left: 0; top: 0; width: 100%; }
-            #area-impresion * { visibility: visible; color: black !important; background: white !important; }
-            .no-print { display: none; }
-        }
-    </style>
+<style>
+:root{
+ --bg:#121416;
+ --surface:#25282c;
+ --platinum:#e5e4e2;
+ --text:#ffffff;
+ --danger:#ff4d4d;
+}
+body{
+ background:var(--bg);
+ color:var(--text);
+ font-family:Segoe UI,sans-serif;
+ margin:0;
+ display:flex;
+ height:100vh;
+ overflow:hidden;
+}
+nav{
+ width:240px;
+ background:var(--surface);
+ padding:20px;
+ display:flex;
+ flex-direction:column;
+}
+.nav-btn{
+ padding:12px;
+ background:none;
+ border:none;
+ color:#aaa;
+ cursor:pointer;
+ border-radius:6px;
+ margin-bottom:5px;
+ text-align:left;
+}
+.nav-btn.active{
+ background:var(--platinum);
+ color:var(--bg);
+ font-weight:bold;
+}
+main{
+ flex:1;
+ padding:30px;
+ overflow-y:auto;
+}
+.card{
+ background:var(--surface);
+ padding:20px;
+ border-radius:10px;
+ margin-bottom:20px;
+}
+.grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+ gap:15px;
+}
+input,select{
+ background:#121416;
+ border:1px solid #444;
+ color:white;
+ padding:10px;
+ border-radius:6px;
+ width:100%;
+}
+button{
+ padding:10px;
+ border:none;
+ border-radius:6px;
+ cursor:pointer;
+ font-weight:bold;
+}
+.btn-main{
+ background:var(--platinum);
+ color:var(--bg);
+}
+.btn-danger{
+ background:var(--danger);
+ color:white;
+}
+.hidden{display:none;}
+table{
+ width:100%;
+ border-collapse:collapse;
+}
+th,td{
+ padding:10px;
+ border-bottom:1px solid #333;
+}
+</style>
 </head>
+
 <body>
 
 <nav>
-    <div class="reloj" id="reloj-digital">00:00:00</div>
-    <div style="text-align: center; margin-bottom: 20px;">
-        <h2 style="color: var(--platinum); margin: 0;">22y22 S.A.S.</h2>
-        <small id="fecha-actual" style="color: #888;"></small>
-    </div>
-    <button class="nav-btn active" onclick="navegar('ventas')">Ventas</button>
-    <button class="nav-btn" onclick="navegar('produccion')">Producción (Pozo)</button>
-    <button class="nav-btn" onclick="navegar('egresos')">Egresos</button>
-    <button class="nav-btn" onclick="navegar('config')">Configuración</button>
-    <button class="nav-btn" onclick="navegar('cierre')" style="margin-top: auto; color: var(--danger); border: 1px solid var(--danger);">Cierre de Caja</button>
+<h2>22y22 S.A.S.</h2>
+<button class="nav-btn active" onclick="mostrar('ventas',this)">Ventas</button>
+<button class="nav-btn" onclick="mostrar('produccion',this)">Producción</button>
+<button class="nav-btn" onclick="mostrar('egresos',this)">Egresos</button>
+<button class="nav-btn" onclick="mostrar('config',this)">Configuración</button>
+<button class="nav-btn" onclick="mostrar('cierre',this)">Cierre Diario</button>
 </nav>
 
 <main>
-    <!-- VENTAS -->
-    <section id="sec-ventas">
-        <h2>Punto de Venta</h2>
-        <div class="card grid">
-            <div><label>Repartidor</label><select id="v-rep"></select></div>
-            <div><label>Producto</label><select id="v-prod"></select></div>
-            <div><label>Cantidad</label><input type="number" id="v-cant" value="1"></div>
-            <div style="display:flex; align-items:flex-end;"><button class="btn btn-main" onclick="agregarCarrito()">+ Añadir</button></div>
-        </div>
-        <div class="card">
-            <table id="tabla-carrito">
-                <thead><tr><th>Producto</th><th>Cant.</th><th>Litros</th><th>Subtotal</th><th>Acción</th></tr></thead>
-                <tbody></tbody>
-            </table>
-            <div style="text-align: right; margin-top: 20px;">
-                <h2 style="color: var(--accent)">TOTAL: $<span id="v-total-monto">0</span></h2>
-                <div class="grid" style="max-width: 450px; margin-left: auto; margin-bottom: 15px;">
-                    <input type="number" id="p-efectivo" placeholder="Efectivo $">
-                    <input type="number" id="p-transfe" placeholder="Transferencia $">
-                </div>
-                <button class="btn btn-main" style="width: 100%;" onclick="procesarVenta()">PAGAR Y EMITIR TICKET</button>
-            </div>
-        </div>
-    </section>
 
-    <!-- PRODUCCIÓN -->
-    <section id="sec-produccion" class="hidden">
-        <h2>Control de Pozo vs Ventas</h2>
-        <div class="card grid">
-            <div><label>Lectura Inicial (m³)</label><input type="number" id="pozo-inicio" step="0.001"></div>
-            <div><label>Lectura Final (m³)</label><input type="number" id="pozo-final" step="0.001"></div>
-            <div style="display:flex; align-items:flex-end;"><button class="btn btn-main" onclick="calcularPerdida()">Calcular Desperdicio</button></div>
-        </div>
-        <div id="res-produccion"></div>
-    </section>
+<!-- VENTAS -->
+<section id="ventas">
+<h2>Punto de Venta</h2>
 
-    <!-- CONFIGURACIÓN -->
-    <section id="sec-config" class="hidden">
-        <div class="grid">
-            <div class="card">
-                <h3>Repartidores</h3>
-                <input type="hidden" id="edit-rep-id">
-                <input type="text" id="r-nombre" placeholder="Nombre"><input type="text" id="r-cuit" placeholder="CUIT">
-                <button class="btn btn-main" style="width:100%; margin-top:10px;" onclick="guardarRepartidor()">Guardar</button>
-                <table id="t-reps-config"><thead><tr><th>Nombre</th><th>Acciones</th></tr></thead><tbody></tbody></table>
-            </div>
-            <div class="card">
-                <h3>Productos</h3>
-                <input type="hidden" id="edit-prod-id">
-                <input type="text" id="p-nombre" placeholder="Producto"><input type="number" id="p-litros" placeholder="Litros"><input type="number" id="p-precio" placeholder="Precio $">
-                <button class="btn btn-main" style="width:100%; margin-top:10px;" onclick="guardarProducto()">Guardar</button>
-                <table id="t-prods-config"><thead><tr><th>Producto</th><th>Acciones</th></tr></thead><tbody></tbody></table>
-            </div>
-        </div>
-    </section>
+<div class="card grid">
+<div>
+<label>Producto</label>
+<select id="vProd"></select>
+</div>
+<div>
+<label>Cantidad</label>
+<input type="number" id="vCant" value="1">
+</div>
+<div style="display:flex;align-items:end;">
+<button class="btn-main" onclick="agregarCarrito()">Agregar</button>
+</div>
+</div>
 
-    <!-- EGRESOS -->
-    <section id="sec-egresos" class="hidden">
-        <h2>Egresos</h2>
-        <div class="card grid"><input type="text" id="e-concepto" placeholder="Concepto"><input type="number" id="e-monto" placeholder="Monto $"><button class="btn btn-main" onclick="guardarEgreso()">Registrar</button></div>
-        <table class="card" id="t-egresos"><thead><tr><th>Hora</th><th>Concepto</th><th>Monto</th></tr></thead><tbody></tbody></table>
-    </section>
+<div class="card">
+<table>
+<thead>
+<tr>
+<th>Producto</th>
+<th>Cant</th>
+<th>Total</th>
+<th></th>
+</tr>
+</thead>
+<tbody id="carritoBody"></tbody>
+</table>
 
-    <!-- CIERRE -->
-    <section id="sec-cierre" class="hidden">
-        <div class="card" style="text-align: center;">
-            <h2>Módulo de Cierre Diario</h2>
-            <p>Al presionar el botón se generará el informe detallado para impresión y se resetearán los valores del día.</p>
-            <button class="btn btn-main" onclick="generarInformeCierre()">GENERAR INFORME Y CERRAR DÍA</button>
-        </div>
-    </section>
+<h2>Total: $<span id="totalVenta">0</span></h2>
+<button class="btn-main" style="width:100%" onclick="guardarVenta()">Guardar Venta</button>
+</div>
+</section>
+
+<!-- PRODUCCIÓN -->
+<section id="produccion" class="hidden">
+<h2>Control Producción</h2>
+
+<div class="card grid">
+<input type="number" id="pozoInicio" placeholder="Lectura Inicial m³">
+<input type="number" id="pozoFinal" placeholder="Lectura Final m³">
+<button class="btn-main" onclick="calcularProduccion()">Calcular</button>
+</div>
+
+<div id="resultadoProduccion"></div>
+</section>
+
+<!-- EGRESOS -->
+<section id="egresos" class="hidden">
+<h2>Egresos</h2>
+
+<div class="card grid">
+<input type="text" id="eConcepto" placeholder="Concepto">
+<input type="number" id="eMonto" placeholder="Monto">
+<button class="btn-main" onclick="guardarEgreso()">Guardar</button>
+</div>
+
+<div id="listaEgresos"></div>
+</section>
+
+<!-- CONFIG -->
+<section id="config" class="hidden">
+<div class="card">
+<h3>Agregar Producto</h3>
+<input type="text" id="pNombre" placeholder="Nombre">
+<input type="number" id="pPrecio" placeholder="Precio">
+<input type="number" id="pLitros" placeholder="Litros">
+<button class="btn-main" onclick="guardarProducto()">Guardar</button>
+</div>
+
+<div class="card">
+<h3>Productos</h3>
+<table>
+<thead><tr><th>Nombre</th><th></th></tr></thead>
+<tbody id="tablaProductos"></tbody>
+</table>
+</div>
+</section>
+
+<!-- CIERRE -->
+<section id="cierre" class="hidden">
+<h2>Cierre Diario</h2>
+<div id="informeCierre"></div>
+<button class="btn-main" onclick="generarCierre()">Generar Informe</button>
+</section>
+
 </main>
 
-<div id="area-impresion"></div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc }
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-<script>
-    let db = JSON.parse(localStorage.getItem('22y22_vFinal')) || { repartidores: [], productos: [], ventas: [], egresos: [], litrosVendidosHoy: 0 };
-    let carrito = [];
+const firebaseConfig = {
+ apiKey:"TU_APIKEY",
+ authDomain:"TU_AUTHDOMAIN",
+ projectId:"TU_PROJECTID",
+ storageBucket:"TU_BUCKET",
+ messagingSenderId:"TU_MSGID",
+ appId:"TU_APPID"
+};
 
-    function actualizarReloj() {
-        const ahora = new Date();
-        document.getElementById('reloj-digital').innerText = ahora.toLocaleTimeString();
-        document.getElementById('fecha-actual').innerText = ahora.toLocaleDateString();
-    }
-    setInterval(actualizarReloj, 1000);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    function save() { localStorage.setItem('22y22_vFinal', JSON.stringify(db)); render(); }
-    function navegar(id) { 
-        document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-        document.getElementById('sec-' + id).classList.remove('hidden');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        if(event) event.target.classList.add('active');
-        render(); 
-    }
+let carrito=[];
 
-    // --- REPARTIDORES ---
-    function guardarRepartidor() {
-        const id = document.getElementById('edit-rep-id').value;
-        const nom = document.getElementById('r-nombre').value;
-        const cuit = document.getElementById('r-cuit').value;
-        if(id) { const r = db.repartidores.find(x => x.id == id); r.nom = nom; r.cuit = cuit; } 
-        else { db.repartidores.push({id: Date.now(), nom, cuit, activo: true}); }
-        document.getElementById('edit-rep-id').value = ''; document.getElementById('r-nombre').value = ''; document.getElementById('r-cuit').value = ''; save();
-    }
-    function editarRep(id) { const r = db.repartidores.find(x => x.id == id); document.getElementById('edit-rep-id').value = r.id; document.getElementById('r-nombre').value = r.nom; document.getElementById('r-cuit').value = r.cuit; }
+/* NAVEGACIÓN */
+window.mostrar=(sec,btn)=>{
+ document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+ document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+ document.getElementById(sec).classList.remove("hidden");
+ if(btn) btn.classList.add("active");
+};
 
-    // --- PRODUCTOS ---
-    function guardarProducto() {
-        const id = document.getElementById('edit-prod-id').value;
-        const nom = document.getElementById('p-nombre').value;
-        const lts = parseFloat(document.getElementById('p-litros').value);
-        const pre = parseFloat(document.getElementById('p-precio').value);
-        if(id) { const p = db.productos.find(x => x.id == id); p.nom = nom; p.lts = lts; p.pre = pre; }
-        else { db.productos.push({id: Date.now(), nom, lts, pre}); }
-        document.getElementById('edit-prod-id').value = ''; document.getElementById('p-nombre').value = ''; document.getElementById('p-litros').value = ''; document.getElementById('p-precio').value = ''; save();
-    }
-    function editarProd(id) { const p = db.productos.find(x => x.id == id); document.getElementById('edit-prod-id').value = p.id; document.getElementById('p-nombre').value = p.nom; document.getElementById('p-litros').value = p.lts; document.getElementById('p-precio').value = p.pre; }
+/* PRODUCTOS */
+window.guardarProducto=async()=>{
+ const nombre=document.getElementById("pNombre").value;
+ const precio=parseFloat(document.getElementById("pPrecio").value);
+ const litros=parseFloat(document.getElementById("pLitros").value);
 
-    // --- VENTAS ---
-    function agregarCarrito() {
-        const pId = document.getElementById('v-prod').value;
-        const cant = parseInt(document.getElementById('v-cant').value);
-        const p = db.productos.find(x => x.id == pId);
-        if(p) { carrito.push({...p, cant, sub: p.pre * cant, ltsTot: p.lts * cant}); renderCarrito(); }
-    }
-    function renderCarrito() {
-        const tbody = document.querySelector('#tabla-carrito tbody');
-        tbody.innerHTML = carrito.map((i, idx) => `<tr><td>${i.nom}</td><td>${i.cant}</td><td>${i.ltsTot}L</td><td>$${i.sub}</td><td><button class="btn-danger" onclick="carrito.splice(${idx},1);renderCarrito()">❌</button></td></tr>`).join('');
-        document.getElementById('v-total-monto').innerText = carrito.reduce((a,b) => a + b.sub, 0);
-    }
-    function procesarVenta() {
-        if(!carrito.length) return;
-        const v = { rep: db.repartidores.find(x => x.id == document.getElementById('v-rep').value), items: [...carrito], total: carrito.reduce((a,b)=>a+b.sub,0), lts: carrito.reduce((a,b)=>a+b.ltsTot,0), ef: parseFloat(document.getElementById('p-efectivo').value)||0, tr: parseFloat(document.getElementById('p-transfe').value)||0, fecha: new Date().toLocaleDateString(), hora: new Date().toLocaleTimeString() };
-        db.ventas.push(v); db.litrosVendidosHoy += v.lts;
-        imprimirTicket(v);
-        carrito = []; document.getElementById('p-efectivo').value = ''; document.getElementById('p-transfe').value = ''; save(); renderCarrito();
-    }
+ if(!nombre || !precio) return alert("Completar datos");
 
-    function imprimirTicket(v) {
-        const t = `<div style="width:260px; font-family:monospace; padding:10px; color:black;">
-            <center><b>22y22 S.A.S.</b><br>${v.fecha} ${v.hora}</center><hr>
-            <b>REP:</b> ${v.rep.nom}<br><b>CUIT:</b> ${v.rep.cuit}<hr>
-            <table style="width:100%">${v.items.map(i=>`<tr><td>${i.nom}</td><td>x${i.cant}</td><td align="right">$${i.sub}</td></tr>`).join('')}</table><hr>
-            <div align="right"><b>TOTAL: $${v.total}</b><br>Lts: ${v.lts}L</div>
-            PAGO: EF $${v.ef} | TR $${v.tr}
-        </div>`;
-        document.getElementById('area-impresion').innerHTML = `<center>ORIGINAL<br>${t}<br><br>DUPLICADO<br>${t}</center>`;
-        setTimeout(() => { window.print(); }, 500);
-    }
+ await addDoc(collection(db,"productos"),{nombre,precio,litros});
+ cargarProductos();
+};
 
-    // --- PRODUCCION ---
-    function calcularPerdida() {
-        const ini = parseFloat(document.getElementById('pozo-inicio').value) || 0;
-        const fin = parseFloat(document.getElementById('pozo-final').value) || 0;
-        const ext = (fin - ini) * 1000;
-        const perd = ext - db.litrosVendidosHoy;
-        document.getElementById('res-produccion').innerHTML = `<div class="card"><h3>Extracción Pozo: ${ext} L</h3><h3>Ventas registradas: ${db.litrosVendidosHoy} L</h3><h2 style="color:var(--danger)">Desperdicio: ${perd.toFixed(2)} L</h2></div>`;
-    }
+async function cargarProductos(){
+ const query=await getDocs(collection(db,"productos"));
+ const tabla=document.getElementById("tablaProductos");
+ const select=document.getElementById("vProd");
 
-    // --- CIERRE DE CAJA INFORME ---
-    function generarInformeCierre() {
-        const tIngresos = db.ventas.reduce((a,b) => a + b.total, 0);
-        const tEgresos = db.egresos.reduce((a,b) => a + b.mon, 0);
-        const tEf = db.ventas.reduce((a,b) => a + b.ef, 0);
-        const tTr = db.ventas.reduce((a,b) => a + b.tr, 0);
+ tabla.innerHTML="";
+ select.innerHTML="";
 
-        // Ranking
-        let rank = {};
-        db.ventas.forEach(v => { rank[v.rep.nom] = (rank[v.rep.nom] || 0) + v.total; });
-        let rankSorted = Object.entries(rank).sort((a,b) => b[1] - a[1]);
+ query.forEach(docu=>{
+  const p=docu.data();
 
-        const informe = `
-            <div style="padding:40px; font-family:sans-serif; color:black;">
-                <center><h1>INFORME DE CIERRE DIARIO - 22y22 S.A.S.</h1>
-                <p>Fecha: ${new Date().toLocaleDateString()} | Hora: ${new Date().toLocaleTimeString()}</p></center>
-                <hr>
-                <div style="display:flex; justify-content: space-around;">
-                    <div><h3>ECONÓMICO</h3>
-                        <p>Total Ventas: $${tIngresos}</p>
-                        <p>Total Egresos: $${tEgresos}</p>
-                        <p><b>SALDO CAJA: $${tIngresos - tEgresos}</b></p>
-                    </div>
-                    <div><h3>FORMAS DE PAGO</h3>
-                        <p>Efectivo Total: $${tEf}</p>
-                        <p>Transferencia Total: $${tTr}</p>
-                    </div>
-                </div>
-                <hr>
-                <h3>RANKING DE REPARTIDORES</h3>
-                <ul>${rankSorted.map(r => `<li>${r[0]}: $${r[1]}</li>`).join('')}</ul>
-                <hr>
-                <h3>CONTROL DE PRODUCCIÓN</h3>
-                <p>Total Litros Vendidos: ${db.litrosVendidosHoy} L</p>
-                <hr>
-                <p align="center" style="margin-top:50px;">Firma Responsable: __________________________</p>
-            </div>`;
-        
-        document.getElementById('area-impresion').innerHTML = informe;
-        setTimeout(() => { 
-            window.print(); 
-            if(confirm("¿Desea limpiar los datos del día ahora? (Repartidores y Productos NO se borran)")) {
-                db.ventas = []; db.egresos = []; db.litrosVendidosHoy = 0; save();
-                navegar('ventas');
-            }
-        }, 500);
-    }
+  tabla.innerHTML+=`
+   <tr>
+    <td>${p.nombre}</td>
+    <td><button class="btn-danger" onclick="eliminarProducto('${docu.id}')">X</button></td>
+   </tr>`;
 
-    function guardarEgreso() { db.egresos.push({hora: new Date().toLocaleTimeString(), con: document.getElementById('e-concepto').value, mon: parseFloat(document.getElementById('e-monto').value)}); document.getElementById('e-concepto').value=''; document.getElementById('e-monto').value=''; save(); }
+  select.innerHTML+=`
+   <option value="${docu.id}" 
+   data-precio="${p.precio}" 
+   data-litros="${p.litros}">
+   ${p.nombre} ($${p.precio})
+   </option>`;
+ });
+}
 
-    function render() {
-        document.getElementById('v-rep').innerHTML = db.repartidores.filter(r=>r.activo).map(r=>`<option value="${r.id}">${r.nom}</option>`).join('');
-        document.getElementById('v-prod').innerHTML = db.productos.map(p=>`<option value="${p.id}">${p.nom} ($${p.pre})</option>`).join('');
-        document.querySelector('#t-reps-config tbody').innerHTML = db.repartidores.map(r=>`<tr><td>${r.nom}</td><td><button class="btn-edit" onclick="editarRep(${r.id})">ED</button><button class="btn-danger" onclick="db.repartidores=db.repartidores.filter(x=>x.id!==${r.id});save()">X</button></td></tr>`).join('');
-        document.querySelector('#t-prods-config tbody').innerHTML = db.productos.map(p=>`<tr><td>${p.nom}</td><td><button class="btn-edit" onclick="editarProd(${p.id})">ED</button><button class="btn-danger" onclick="db.productos=db.productos.filter(x=>x.id!==${p.id});save()">X</button></td></tr>`).join('');
-        document.querySelector('#t-egresos tbody').innerHTML = db.egresos.map(e=>`<tr><td>${e.hora}</td><td>${e.con}</td><td>$${e.mon}</td></tr>`).join('');
-    }
-    window.onload = () => { render(); actualizarReloj(); };
+window.eliminarProducto=async(id)=>{
+ await deleteDoc(doc(db,"productos",id));
+ cargarProductos();
+};
+
+/* CARRITO */
+window.agregarCarrito=()=>{
+ const select=document.getElementById("vProd");
+ const opcion=select.selectedOptions[0];
+
+ const nombre=opcion.textContent;
+ const precio=parseFloat(opcion.dataset.precio);
+ const litros=parseFloat(opcion.dataset.litros);
+ const cantidad=parseInt(document.getElementById("vCant").value);
+
+ carrito.push({
+  nombre,
+  cantidad,
+  subtotal:precio*cantidad,
+  litros:litros*cantidad
+ });
+
+ renderCarrito();
+};
+
+function renderCarrito(){
+ const body=document.getElementById("carritoBody");
+ const totalSpan=document.getElementById("totalVenta");
+
+ body.innerHTML="";
+ let total=0;
+
+ carrito.forEach((item,i)=>{
+  total+=item.subtotal;
+  body.innerHTML+=`
+   <tr>
+    <td>${item.nombre}</td>
+    <td>${item.cantidad}</td>
+    <td>$${item.subtotal}</td>
+    <td><button class="btn-danger" onclick="quitar(${i})">X</button></td>
+   </tr>`;
+ });
+
+ totalSpan.textContent=total;
+}
+
+window.quitar=(i)=>{
+ carrito.splice(i,1);
+ renderCarrito();
+};
+
+/* GUARDAR VENTA */
+window.guardarVenta=async()=>{
+ if(!carrito.length) return alert("Carrito vacío");
+
+ const totalVenta=carrito.reduce((a,b)=>a+b.subtotal,0);
+ const litrosVenta=carrito.reduce((a,b)=>a+b.litros,0);
+
+ await addDoc(collection(db,"ventas"),{
+  items:carrito,
+  total:totalVenta,
+  litros:litrosVenta,
+  fecha:new Date()
+ });
+
+ carrito=[];
+ renderCarrito();
+ alert("Venta guardada ✅");
+};
+
+/* PRODUCCIÓN */
+window.calcularProduccion=async()=>{
+ const ini=parseFloat(document.getElementById("pozoInicio").value);
+ const fin=parseFloat(document.getElementById("pozoFinal").value);
+
+ if(isNaN(ini)||isNaN(fin)) return alert("Completar lecturas");
+
+ const extraido=(fin-ini)*1000;
+
+ const ventas=await getDocs(collection(db,"ventas"));
+ let litrosVendidos=0;
+ ventas.forEach(v=>litrosVendidos+=v.data().litros);
+
+ const desperdicio=extraido-litrosVendidos;
+
+ document.getElementById("resultadoProduccion").innerHTML=
+ `<div class="card">
+  Extraído: ${extraido} L<br>
+  Vendido: ${litrosVendidos} L<br>
+  <b style="color:red">Diferencia: ${desperdicio} L</b>
+ </div>`;
+};
+
+/* EGRESOS */
+window.guardarEgreso=async()=>{
+ const concepto=document.getElementById("eConcepto").value;
+ const monto=parseFloat(document.getElementById("eMonto").value);
+
+ if(!concepto||!monto) return alert("Completar datos");
+
+ await addDoc(collection(db,"egresos"),{
+  concepto,monto,fecha:new Date()
+ });
+
+ alert("Egreso guardado");
+};
+
+/* CIERRE */
+window.generarCierre=async()=>{
+ const ventas=await getDocs(collection(db,"ventas"));
+ const egresos=await getDocs(collection(db,"egresos"));
+
+ let totalVentas=0,totalEgresos=0;
+
+ ventas.forEach(v=>totalVentas+=v.data().total);
+ egresos.forEach(e=>totalEgresos+=e.data().monto);
+
+ document.getElementById("informeCierre").innerHTML=
+ `<div class="card">
+  Total Ventas: $${totalVentas}<br>
+  Total Egresos: $${totalEgresos}<br>
+  <h3>Saldo: $${totalVentas-totalEgresos}</h3>
+ </div>`;
+};
+
+window.onload=()=>{cargarProductos();}
 </script>
+
 </body>
 </html>
